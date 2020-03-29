@@ -1,6 +1,9 @@
 var menuState = {
     create: function(){
-        this.music = this.sound.add('music').play({loop: true, volume: .5});
+        this.music = this.sound.add('music')
+        this.music.volume = .5;
+        this.music.loop = true;
+        this.music.play()
 
         var text = this.add.text(game.config.width/2, 170, "LABIRINTO");
         text.setOrigin(.5);
@@ -14,7 +17,7 @@ var menuState = {
         });
 
         this.time.addEvent({ delay: 1000, callback: function(){
-            let gameScope = this;
+            var gameScope = this;
             this.input.keyboard.on('keydown', function (event) {
                 if (event.keyCode === 13){
                     gameScope.music.stop();

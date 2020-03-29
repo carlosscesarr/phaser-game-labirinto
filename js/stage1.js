@@ -3,7 +3,6 @@ var stage1State = {
         this.add.sprite(game.config.width/2,game.config.height/2,'bg');
         this.sound.add('music').play({loop: true, volume: .5});
         stage1State.getItemSound = this.sound.add('getItem');
-        console.log(Phaser);
 
         
         stage1State.maze = [
@@ -43,7 +42,6 @@ var stage1State = {
             frameRate: 12,
         });
         
-
         this.anims.create({
 
             key: 'goRight',
@@ -129,11 +127,17 @@ var stage1State = {
         stage1State.coin.setImmovable();
         stage1State.coin.anims.play('coin')
 
+        //Text score
         stage1State.coins = 0;
-        stage1State.txtCoins = this.add.text(0,0,"Score: "+stage1State.coins);
+        stage1State.txtCoins = this.add.text(0,0, "Coins: 00"+stage1State.coins);
+        //Text coin
+        stage1State.score = 0;
+        stage1State.txtScore = this.add.text(stage1State.txtCoins.width + 10, 0, "Score: 00"+stage1State.score);
+
+
         stage1State.controls = this.input.keyboard.createCursorKeys();
     },
-    update: function(){
+    update: function() {
         
         this.physics.add.collider(stage1State.player,stage1State.blocks);
         this.physics.add.collider(stage1State.enemy,stage1State.blocks);
@@ -141,20 +145,40 @@ var stage1State = {
         this.physics.add.collider(stage1State.player,stage1State.coin, stage1State.getCoin);
         stage1State.movePlayer();
         stage1State.moveEnemy();
-        
     },
-    getCoin: function(){
+    getCoin: function() {
         stage1State.getItemSound.play();
-        //coin.destroy();
         stage1State.coins++;
+        stage1State.score = stage1State.score + 5;
         stage1State.getTextScore();
+        stage1State.getTextCoin();
         let newPosition = stage1State.newPosition();
         stage1State.coin.setPosition(newPosition.x,newPosition.y);
     },
-    getTextScore: function(){
-        stage1State.txtCoins.setText('Score: '+stage1State.coins)
+    getTextScore: function() {
+        var txtScore;
+        if (stage1State.score < 10) {
+            txtScore = `00${stage1State.score}`
+        } else if (stage1State.score < 100) {
+            txtScore = `0${stage1State.score}`
+        } else {
+            txtScore = stage1State.score;
+        }
+        stage1State.txtScore.setText('Score: '+txtScore)
     },
-    movePlayer: function(){
+    getTextCoin: function() {
+        var txtCoin;
+        if (stage1State.coins < 10) {
+            txtCoin = `00${stage1State.coins}`
+        } else if (stage1State.coins < 100) {
+            txtCoin = `0${stage1State.coins}`
+        } else {
+            txtCoin = stage1State.coins;
+        }
+
+        stage1State.txtCoins.setText('Coins: '+txtCoin)
+    },
+    movePlayer: function() {
        
         const key = stage1State.controls;
         stage1State.player.body.velocity.x = 0
